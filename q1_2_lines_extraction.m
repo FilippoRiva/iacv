@@ -11,7 +11,7 @@ function plotLines(lines)
 end
 
 function plotLinesMat(lines)
-    to_detect = ["l1","l2","l3",...
+    names = ["l1","l2","l3",...
              "h1","h2","h3","h4",...
              "m1","m2","m3","m4","m5","m6"];
     for k = 1:(length(lines)/2)
@@ -20,7 +20,7 @@ function plotLinesMat(lines)
         plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');
         x = (xy(1,1)+xy(2,1))/2;
         y = (xy(1,2)+xy(2,2))/2;
-        text(x, y, cellstr(to_detect(k)), 'FontSize', 10, 'Color', 'blue');
+        text(x, y, cellstr(names(k)), 'FontSize', 10, 'Color', 'blue');
     end
 end
 
@@ -30,7 +30,11 @@ function plotLinesStruct(lines)
         plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');
         x = (xy(1,1)+xy(2,1))/2;
         y = (xy(1,2)+xy(2,2))/2;
-        text(x, y, cellstr(num2str(k)), 'FontSize', 10, 'Color', 'blue');
+        if isfield(lines, 'name')
+            text(x, y, lines(k).name, 'FontSize', 10, 'Color', 'blue');
+        else 
+            text(x, y, cellstr(num2str(k)), 'FontSize', 10, 'Color', 'blue');
+        end
     end
 end
 
@@ -66,13 +70,15 @@ title("Automatically detected lines")
 lines = [hlines, vlines];
 plotLines(lines);
 
-to_detect = ["l1","l2","l3",...
-             "h1","h2","h3","h4",...
-             "m1","m2","m3","m4","m5","m6"];
-idxs =      [7,2,-1,...
-             10,9,11,12,...
-             -1,-1,-1,-1,17,-1];
+% manually chosen
+names =["l1","l2","l3",...
+       "h1","h2","h3","h4",...
+       "m1","m2","m3","m4","m5","m6"];
+idxs =[7,2,-1,...
+       10,9,11,12,...
+       -1,-1,-1,-1,17,-1];
 
+% insertion into variables
 l2 = [lines(idxs(2)).point1;
       lines(idxs(2)).point2];
 h1 = [lines(idxs(4)).point1;
@@ -108,37 +114,26 @@ m6 = [1440, 694;
       1188, 751];
 
 function line = get_line(mat)
-    p1 = [mat(1,1), mat(2,1), 1];
-    p2 = [mat(1,2), mat(2,2), 1];
+    p1 = [mat(1,1), mat(1,2), 1];
+    p2 = [mat(2,1), mat(2,2), 1];
     line = cross(p1,p2);
 end
 
-res = [l1; l2; l3; h1; h2; h3; h4; m1; m2; m3; m4; m5; m6; ];
+list = {l1,l2,l3,h1,h2,h3,h4,m1,m2,m3,m4,m5,m6};
+lines = struct;
+
+for i = 1:length(names)
+      lines(i).name = names(i);
+      lines(i).point1 = list{i}(1,:);
+      lines(i).point2 = list{i}(2,:);
+      lines(i).line = get_line(list{i});
+end
 
 f3 = figure();
 imshow(img);
 hold on;
 title("Lines after selection and manual intervention")
-plotLines(res)
-
-% storing the result as homogeneous coordinates
-res_h = [get_line(l1); 
-        get_line(l2);
-        get_line(l3);
-        get_line(h1);
-        get_line(h2);
-        get_line(h3);
-        get_line(h4)
-        get_line(m1);
-        get_line(m2);
-        get_line(m3);
-        get_line(m4);
-        get_line(m5);
-        get_line(m6);];
-
-disp(res);
-disp(res_h)
+plotLines(lines)
 
 % Storing the results for future use
-save('lines.mat','res');
-save('lines_h.mat','res_h')
+save('lines.mat','lines');
