@@ -2,6 +2,9 @@ clc
 clear
 close all
 
+addpath(genpath('./../../data'))
+addpath(genpath('./../../utils'))
+
 function plotLines(lines)
     if isstruct(lines)
         plotLinesStruct(lines)
@@ -40,7 +43,7 @@ end
 
 
 % Loading the image
-img = imread('img.jpg');
+img = imread('./../../data/img.jpg');
 
 % Preprocessing
 gray = rgb2gray(img);
@@ -136,4 +139,4 @@ title("Lines after selection and manual intervention")
 plotLines(lines)
 
 % Storing the results for future use
-save('lines.mat','lines');
+save('./../../data/lines.mat','lines');

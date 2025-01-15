@@ -2,6 +2,9 @@ clc
 clear
 close all
 
+addpath(genpath('./../../data'))
+addpath(genpath('./../../utils'))
+
 % Circumference C ROI
 x1 = 410; y1 = 505; x2 = 744; y2 = 600;
 C_ROI = [x1, y1, x2 - x1, y2 - y1];
@@ -71,8 +74,8 @@ disp('Selected Points:');
 disp(C);
 
 % Storing Data for Future Usage
-save("s.mat","S")
-save("c.mat","C")
+save("./../../data/s.mat","S")
+save("./../../data/c.mat","C")
 
 % Testing Data Saves
 clear

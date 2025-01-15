@@ -2,6 +2,9 @@ clc
 clear
 close all
 
+addpath(genpath('./../../data'))
+addpath(genpath('./../../utils'))
+
 % loading the lines struct
 load('lines.mat');
 
@@ -55,7 +58,7 @@ disp(l_dir_avg)
 f = figure;
 imshow(img);
 hold on;
-utils.plotLinesFromStruct(lines)
+plot_lines_from_struct(lines)
 % plotting the m_dir points
 for i = 1:15
     plot(m_dir(i,1),m_dir(i,2),'o');
@@ -77,4 +80,4 @@ plot(xy(:,1), xy(:,2),'LineWidth',2,'Color','blue');
 % computing the line in homogeneous coordinates and storing it for future use
 hl_inf = cross(m_dir_avg, l_dir_avg);
 
-save('hl_inf.mat', 'hl_inf')
+save('./../../data/hl_inf.mat', 'hl_inf')
