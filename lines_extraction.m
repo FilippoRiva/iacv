@@ -2,6 +2,39 @@ clc
 clear
 close all
 
+function plotLines(lines)
+    if isstruct(lines)
+        plotLinesStruct(lines)
+    else 
+        plotLinesMat(lines)
+    end
+end
+
+function plotLinesMat(lines)
+    to_detect = ["l1","l2","l3",...
+             "h1","h2","h3","h4",...
+             "m1","m2","m3","m4","m5","m6"];
+    for k = 1:(length(lines)/2)
+        xy = [lines(k*2-1,1), lines(k*2-1,2);
+                lines(k*2,1), lines(k*2,2)];
+        plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');
+        x = (xy(1,1)+xy(2,1))/2;
+        y = (xy(1,2)+xy(2,2))/2;
+        text(x, y, cellstr(to_detect(k)), 'FontSize', 10, 'Color', 'blue');
+    end
+end
+
+function plotLinesStruct(lines)
+    for k = 1:length(lines)
+        xy = [lines(k).point1; lines(k).point2];
+        plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');
+        x = (xy(1,1)+xy(2,1))/2;
+        y = (xy(1,2)+xy(2,2))/2;
+        text(x, y, cellstr(num2str(k)), 'FontSize', 10, 'Color', 'blue');
+    end
+end
+
+
 % Loading the image
 img = imread('img.jpg');
 
@@ -19,58 +52,60 @@ vEdges = edge(gray, method, 0.05, 'vertical');
 P = houghpeaks(H,50,'threshold',ceil(0.3*max(H(:))), 'NHoodSize', [97 37]);
 hlines = houghlines(hEdges, T, R, P, 'FillGap', 100, 'MinLength', 50);
 
-function plot_lines(lines)
-    for k = 1:length(lines)
-        xy = [lines(k).point1; lines(k).point2];
-        disp(xy)
-        plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');
-    
-        % Plot beginnings and ends of lines
-        plot(xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');
-        plot(xy(2,1),xy(2,2),'x','LineWidth',2,'Color','red');
-    end
-end
-
-
+% Performing Hough Transform for vertical lines
 [H,T,R] = hough(vEdges,'RhoResolution',0.5,'Theta',-90:0.5:89);
 P = houghpeaks(H,50,'threshold',ceil(0.3*max(H(:))), 'NHoodSize', [97 37]);
 vlines = houghlines(vEdges, T, R, P, 'FillGap', 100, 'MinLength', 50);
 
-disp(vlines);
-
 % Plot the lines
 f2 = figure();
-brush on;
 imshow(img);
 hold on;
+title("Automatically detected lines")
 
-plot_lines(hlines)
-plot_lines(vlines)
+lines = [hlines, vlines];
+plotLines(lines);
 
-% Lines selection through brush instrument, assuming that 
-% the naming is coherent with the homework assignment
-title("Use brush instrument to select the useful lines")
-pause
-close all
+to_detect = ["l1","l2","l3",...
+             "h1","h2","h3","h4",...
+             "m1","m2","m3","m4","m5","m6"];
+idxs =      [7,2,-1,...
+             10,9,11,12,...
+             -1,-1,-1,-1,17,-1];
 
-% Manual lines retrieval
-% l1, m1, m2, m3, m4, m6
-f3 = figure();
-imshow(img)
-title('Get l1')
-[x, y] = getpts();
-l1 = [x(1:2)'; y(1:2)'];
+l2 = [lines(idxs(2)).point1;
+      lines(idxs(2)).point2];
+h1 = [lines(idxs(4)).point1;
+      lines(idxs(4)).point2];
+h2 = [lines(idxs(5)).point1;
+      lines(idxs(5)).point2];
+h3 = [lines(idxs(6)).point1;
+      lines(idxs(6)).point2];
+h4 = [lines(idxs(7)).point1;
+      lines(idxs(7)).point2];
+m5 = [lines(idxs(12)).point1;
+      lines(idxs(12)).point2];
 
-mi = zeros(6, 2, 2);
-mi(5, :, :) = m5;
-for k = 1:6
-    if k ~= 5
-        title('Get m'+string(k));
-        [x, y] = getpts();
-        mi(k, :, :) = reshape([x(1:2)'; y(1:2)'], [2, 2]);
-        disp(squeeze(mi(k,:,:)))
-    end
-end
+disp("Click to move on")
+waitforbuttonpress
+close(f2)
+
+% Manually picked points for lines retrieval
+% l3, m1, m2, m3, m4, m6
+l1 = [421, 778;
+      1178, 753];
+l3 = [384, 232;
+      1318, 370];
+m1 = [403, 250;
+      462, 452];
+m2 = [774, 302;
+      722, 464];
+m3 = [1073, 347;
+      949, 479];
+m4 = [1304, 386;
+      1161, 483];
+m6 = [1440, 694;
+      1188, 751];
 
 function line = get_line(mat)
     p1 = [mat(1,1), mat(2,1), 1];
@@ -78,25 +113,32 @@ function line = get_line(mat)
     line = cross(p1,p2);
 end
 
+res = [l1; l2; l3; h1; h2; h3; h4; m1; m2; m3; m4; m5; m6; ];
+
+f3 = figure();
+imshow(img);
+hold on;
+title("Lines after selection and manual intervention")
+plotLines(res)
+
 % storing the result as homogeneous coordinates
-res = [
-        get_line(l1); 
+res_h = [get_line(l1); 
         get_line(l2);
         get_line(l3);
-        get_line(squeeze(mi(1, :, :)));
-        get_line(squeeze(mi(2, :, :)));
-        get_line(squeeze(mi(3, :, :)));
-        get_line(squeeze(mi(4, :, :)));
-        get_line(squeeze(mi(5, :, :))); ...
-        get_line(squeeze(mi(6, :, :)));
         get_line(h1);
         get_line(h2);
         get_line(h3);
         get_line(h4)
-];
+        get_line(m1);
+        get_line(m2);
+        get_line(m3);
+        get_line(m4);
+        get_line(m5);
+        get_line(m6);];
+
 disp(res);
+disp(res_h)
 
 % Storing the results for future use
 save('lines.mat','res');
-
-close all 
+save('lines_h.mat','res_h')
