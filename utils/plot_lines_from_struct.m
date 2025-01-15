@@ -1,3 +1,4 @@
+% assuming the struct comes from q1_2_extract_lines.m or is the one loaded from /data/lines.mat
 function plot_lines_from_struct(lines)
     for k = 1:length(lines)
     xy = [lines(k).point1; lines(k).point2];
