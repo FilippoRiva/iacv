@@ -52,7 +52,13 @@ S12 = solve(eqns, [x,y], 'IgnoreAnalyticConstraints',true,'Maxdegree',4);
 II = [double(S12.x(1)); double(S12.y(1)); 1];
 JJ = [double(S12.x(2)); double(S12.y(2)); 1];
 
-imDCCP = II*JJ' + JJ*II'; % image of the conic dual to circular points
+% Storing Circular Points
+save('./../../data/ii.mat', 'II')
+save('./../../data/jj.mat', 'JJ')
+
+% Calculating image of the conic dual to circular points
+imDCCP = II*JJ' + JJ*II'; 
+save('./../../data/imDCCP.mat', 'imDCCP')
 
 % Calculating the image of the C circumference
 disp("Calculating transformed conic...")
