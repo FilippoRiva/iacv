@@ -38,7 +38,7 @@ title('Affine rectification')
 C = [eye(2), zeros(2,1); zeros(1,3)]; % C_inf canonical form
 
 % Searching for the image of the conic dual to circular points
-syms 'x' 'y'
+syms x y
 
 [a, b, c, d, e, f] = deal(C_h(1,1), 2*C_h(1,2), C_h(2,2), 2*C_h(1,3), 2*C_h(2,3), C_h(3,3));
 
@@ -87,9 +87,11 @@ U = [cos(rotation), -sin(rotation); sin(rotation), cos(rotation)];
 S = diag([1, axes(1)/axes(2)]);
 K = U*S*U';
 A = [K zeros(2,1); zeros(1,2),1];
-T = A*H_affine;
+H_rect = A*H_affine;
 
-tform = projtform2d(T);
+save('./../../data/h_rect.mat', 'H_rect')
+
+tform = projtform2d(H_rect);
 
 % Calculating results
 disp("Calculating metric rectification results...")
