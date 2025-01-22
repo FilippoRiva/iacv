@@ -25,32 +25,34 @@ img = imread('img.jpg');
 
 
 % calculates the insersection of two lines and returns the homogeneous point such that c=1
-function res = calculateIntersectionFromIdx(idx1, idx2, lines)
-    intersection = cross(lines(idx1).line, lines(idx2).line);
-    res = intersection/intersection(3);
-end
-
-
 
 % Find the average of the intersection of all the combinations of m_i
 range = 8:13;
 comb = nchoosek(range, 2);
 m_dir = zeros(length(comb), 3);
 for i = 1:length(comb)
-    m_dir(i,:) = calculateIntersectionFromIdx(comb(i,1),comb(i,2),lines);
+    m_dir(i,:) = calculate_intersection_from_idx(comb(i,1),comb(i,2),lines);
 end
 m_dir_avg = [mean(m_dir(:,1)),mean(m_dir(:,2)),1];
 save('./../../data/m_dir_avg.mat', 'm_dir_avg')
 
 % Find the average of the intersection between l1 & l3 + l2 & l3
 l_dir = zeros(2, 3);
-l_dir(1,:) = calculateIntersectionFromIdx(1,3,lines);
-l_dir(2,:) = calculateIntersectionFromIdx(2,3,lines);
+l_dir(1,:) = calculate_intersection_from_idx(1,3,lines);
+l_dir(2,:) = calculate_intersection_from_idx(2,3,lines);
 l_dir_avg = [mean(l_dir(:,1)),mean(l_dir(:,2)),1];
 save('./../../data/l_dir_avg.mat', 'l_dir_avg')
 
-
-
+% Find the average of the intersection of all the combinations of h_i
+% Calculated here for future use
+range = 4:7;
+comb = nchoosek(range, 2);
+h_dir = zeros(length(comb), 3);
+for i = 1:length(comb)
+    h_dir(i,:) = calculate_intersection_from_idx(comb(i,1),comb(i,2),lines);
+end
+h_dir_avg = [mean(h_dir(:,1)),mean(h_dir(:,2)),1];
+save('./../../data/h_dir_avg.mat', 'h_dir_avg')
 
 
 % show the resulting points at infinity and plot the line at infinity
