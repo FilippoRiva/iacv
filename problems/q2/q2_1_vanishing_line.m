@@ -40,12 +40,14 @@ for i = 1:length(comb)
     m_dir(i,:) = calculateIntersectionFromIdx(comb(i,1),comb(i,2),lines);
 end
 m_dir_avg = [mean(m_dir(:,1)),mean(m_dir(:,2)),1];
+save('./../../data/m_dir_avg.mat', 'm_dir_avg')
 
 % Find the average of the intersection between l1 & l3 + l2 & l3
 l_dir = zeros(2, 3);
 l_dir(1,:) = calculateIntersectionFromIdx(1,3,lines);
 l_dir(2,:) = calculateIntersectionFromIdx(2,3,lines);
 l_dir_avg = [mean(l_dir(:,1)),mean(l_dir(:,2)),1];
+save('./../../data/l_dir_avg.mat', 'l_dir_avg')
 
 
 
