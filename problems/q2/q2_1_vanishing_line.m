@@ -76,5 +76,6 @@ plot(xy(:,1), xy(:,2),'LineWidth',2,'Color','blue');
 
 % computing the line in homogeneous coordinates and storing it for future use
 hl_inf = cross(m_dir_avg, l_dir_avg);
+hl_inf = hl_inf / (hl_inf(3));
 
 save('./../../data/hl_inf.mat', 'hl_inf')
