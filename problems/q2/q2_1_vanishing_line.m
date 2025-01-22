@@ -41,15 +41,12 @@ for i = 1:length(comb)
 end
 m_dir_avg = [mean(m_dir(:,1)),mean(m_dir(:,2)),1];
 
-% Find the average of the intersection of all the combinations of l_i
-range = 1:3;
-comb = nchoosek(range, 2);
-l_dir = zeros(length(comb), 3);
-for i = 1:length(comb)
-    l_dir(i,:) = calculateIntersectionFromIdx(comb(i,1),comb(i,2),lines);
-end
+% Find the average of the intersection between l1 & l3 + l2 & l3
+l_dir = zeros(2, 3);
+l_dir(1,:) = calculateIntersectionFromIdx(1,3,lines);
+l_dir(2,:) = calculateIntersectionFromIdx(2,3,lines);
 l_dir_avg = [mean(l_dir(:,1)),mean(l_dir(:,2)),1];
-disp(l_dir_avg)
+
 
 
 
@@ -65,12 +62,12 @@ for i = 1:15
 end
 plot(m_dir_avg(1),m_dir_avg(2),'+')
 % plotting the l_dir points
-for i = 1:3
+for i = 1:2
     plot(l_dir(i,1),l_dir(i,2),'o');
 end
 plot(l_dir_avg(1),l_dir_avg(2),'+')
 % plotting the line at infinity
-xlim([0.5,4500.5])
+xlim([0.5,3500.5])
 ylim([0.5,1200.5])
 xy = [m_dir_avg(1), m_dir_avg(2);
       l_dir_avg(1), l_dir_avg(2)];
