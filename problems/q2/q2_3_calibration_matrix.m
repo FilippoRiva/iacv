@@ -7,11 +7,11 @@ addpath(genpath('./../../utils'))
 
 img = imread('img.jpg');
 
-load('h_dir_avg.mat') % vanishing point of the h lines
-load('l_dir_avg.mat') % vanishing point of the l lines
-load('m_dir_avg.mat') % vanishing point of the m lines
-load('h_rect.mat') % rectification matrix from original image to rectified img
-load('hl_inf.mat') % image of the line at infinity
+load('h_dir_avg.mat') % h_dir_avg : vanishing point of the h lines
+load('l_dir_avg.mat') % l_dir_avg : vanishing point of the l lines
+load('m_dir_avg.mat') % m_dir_avg : vanishing point of the m lines
+load('h_rect.mat') % H_rect : rectification matrix from original image to rectified img
+load('hl_inf.mat') % hl_inf : image of the line at infinity
 
 
 % omega will have the form : 
