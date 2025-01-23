@@ -49,13 +49,21 @@ sol = solve(eqn, [a,b,c,d]);
 
 omega = double([sol.a, 0, sol.b; 0, 1, sol.c; sol.b, sol.c, sol.d]);
 
-omega_inv = inv(omega);
-K = chol(omega_inv);
+alfa = sqrt(omega(1, 1));
+u0 = -omega(1, 3) / (alfa^2);
+v0 = -omega(2, 3);
+fy = sqrt(omega(3, 3) - (alfa^2) * (u0^2) - (v0^2));
+fx = fy / alfa;
+K = [fx, 0, u0;  0, fy, v0;  0, 0, 1];
 
-assert(norm(K'*K - omega_inv)<0.001, 'nope')
+disp(K)
 
-K = K./K(3,3);
-pixel_ratio = K(1,1) / K(2,2);
+% omega_inv = inv(omega);
+% K = chol(omega_inv);
+% assert(norm(K'*K - omega_inv)<0.001, 'Cholesky Failure')
+
+% K = K./K(3,3);
+% pixel_ratio = K(1,1) / K(2,2);
 
 save('./../../data/k.mat','K')
 save('./../../data/omega.mat','omega')
