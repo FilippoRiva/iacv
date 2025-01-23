@@ -7,7 +7,9 @@ addpath(genpath('./../../utils'))
 
 img = imread('img.jpg');
 load('hl_inf.mat') % hl_inf is the horizontal plane line at infinity
-load('c_h.mat') % c_h is the homogeneous representation of the C circumference
+load('c_h.mat') % csi_h is the homogeneous representation of the C circumference
+
+R_img = imref2d(size(img), [0,size(img,2)], [0,size(img,1)]);
 
 % Using a Stratified Rectification Methodology exploiting the C circuference
 %% Affine Rectification 
@@ -19,18 +21,17 @@ assert(norm(inv(H_affine)' * hl_inf' - [0; 0; 1]) < 0.000001, "The H_affine does
 % Applying H_affine 
 tform = projtform2d(H_affine);
 
-R = imref2d(size(img)*10);
-
 disp("Calculating affine rectification results...")
-img_aff = imwarp(img, tform, "OutputView", R);
-disp("Saving affine results...")
-save('./../../data/img_aff.mat', 'img_aff')
+outputX = [-200,16000];
+outputY = [-200,10000];
+R_out = imref2d([outputX(2)-outputX(1),outputY(2)-outputY(1)],outputX,outputY);
+[img_aff, R_B] = imwarp(img, R_img ,tform, 'OutputView', R_out);
 
 % Show affine rectification results
 figure;
 disp("Showing affine results...")
-imshow(img_aff)
-title('Affine rectification')
+imshow(img_aff, "XData", R_B.XWorldLimits, "YData", R_B.YWorldLimits)
+axis on
 
 
 %% Metric Rectification
@@ -66,8 +67,11 @@ Q = inv(H_affine)'*C_h*inv(H_affine);
 Q = Q./Q(3,3);
 
 % Show the result on the transformed image
-disp("Plotting the tranformed conic...")
-plot_conic(Q, img_aff, "C")
+% 
+% SKIPPED : too much computation 
+%
+% disp("Plotting the tranformed conic...")
+% plot_conic(Q, img_aff, "C") 
 
 % Compute conic center
 Q_2x2 = Q(1:2,1:2);
@@ -93,13 +97,18 @@ save('./../../data/h_rect.mat', 'H_rect')
 
 tform = projtform2d(H_rect);
 
+warning('off')
 % Calculating results
 disp("Calculating metric rectification results...")
-img_rect = imwarp(img, tform, "OutputView", imref2d(size(img)*10));
+outputX = [-1000,15000];
+outputY = [-2000,11000];
+R_out = imref2d([outputX(2)-outputX(1),outputY(2)-outputY(1)],outputX,outputY);
+[img_rect, R_B] = imwarp(img, R_img ,tform, 'OutputView', R_out);
 disp("Saving results...")
 save('./../../data/img_rect.mat', 'img_rect')
 
 % Showing metric rectification
-figure;
 disp("Showing results...")
-imshow(img_rect);
+figure;
+imshow(img_rect, "XData", R_B.XWorldLimits, "YData", R_B.YWorldLimits)
+axis on

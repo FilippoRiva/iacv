@@ -37,6 +37,9 @@ imDCCP = imDCCP./norm(imDCCP);
 S(3,3) = 1;
 H_rect_vert = inv(U * sqrt(S));
 
+% Storing the results for future use
+save('./../../data/h_rect_vert.mat','H_rect_vert')
+
 tform = projective2d(H_rect_vert');
 
 % Showing the results
