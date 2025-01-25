@@ -92,19 +92,23 @@ front = [
 
 back = [
     0,      0,      -DEPTH;
-    WIDTH,  0,      -DEPTH;
     0,      HEIGTH, -DEPTH;
     WIDTH,  HEIGTH, -DEPTH;
+    WIDTH,  0,      -DEPTH;
 ];
 
 hold on;
 
+% Show front panel
 fill3(front(:,1),front(:,2),front(:,3),'b')
-
 pcshow(pointCloud(front), "MarkerSize", 800)
+
+% Show back panel
+fill3(back(:,1),back(:,2),back(:,3),'y')
 pcshow(pointCloud(back), "MarkerSize", 800)
 
-plotCamera('location', pos, 'orientation', rot.', 'size', 20)
+
+plotCamera('location', pos, 'orientation', rot, 'size', 30)
 
 xlabel('X')
 ylabel('Y')
