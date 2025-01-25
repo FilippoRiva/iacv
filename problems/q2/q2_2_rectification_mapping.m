@@ -111,11 +111,7 @@ disp("> Done")
 
 %% Storing Results
 fprintf(1,"\nStoring results...\n")
-save('./../../data/imDCCP.mat', 'imDCCP')
-save('./../../data/ii.mat', 'II')
-save('./../../data/jj.mat', 'JJ')
 save('./../../data/h_rect.mat', 'H_rect')
-save('./../../data/img_rect.mat', 'img_rect')
 disp("> Done")
 
 %% End

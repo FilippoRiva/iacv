@@ -70,7 +70,9 @@ figure;
 imshow(img_rgb)
 hold on;
 axis on;
+title("Rectified S curve")
 disp("> Done")
+
 
 %% 3D Plotting
 fprintf(1,'\n3D Plotting...\n')
@@ -110,6 +112,7 @@ zlabel('Z')
 xlim([-500,1100])
 ylim([-200,300])
 zlim([-400,800])
+title("Simplified 3D model")
 
 grid on
 disp("> Done")

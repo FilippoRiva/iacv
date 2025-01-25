@@ -50,7 +50,7 @@ end
 disp("> Done")
 
 %% Showing results
-fprintf("Showing Results...")
+fprintf(1,"\nShowing Results...\n")
 format shortG
 disp("> Original image points:")
 disp(res(:,:))
@@ -59,6 +59,7 @@ disp(double(res_h(:,:)))
 disp("> Vertical plane points:")
 disp(res_v(:,:))
 
+disp("> Plotting ...")
 % Calculating projected imgs
 tform_h = projtform2d(H_rect);
 img_h = imwarp(img, tform_h, "OutputView", imref2d(size(img)*10));
@@ -72,6 +73,7 @@ hold on;
 plot(res(:,1),res(:,2),'+')
 xlim([min(res(:,1))-100,max(res(:,1))+100])
 ylim([min(res(:,2))-100,max(res(:,2))+100])
+title("Found points onto the original Image")
 
 figure;
 imshow(img_h)
@@ -79,6 +81,7 @@ hold on;
 plot(res_h(:,1),res_h(:,2),'+')
 xlim([min(res_h(:,1))-100,max(res_h(:,1))+100])
 ylim([min(res_h(:,2))-100,max(res_h(:,2))+100])
+title("Found points onto the horizontally rectified Image")
 
 figure;
 imshow(img_v, "XData", R_out_v.XWorldLimits, "YData", R_out_v.YWorldLimits)
@@ -86,6 +89,8 @@ hold on;
 plot(res_v(:,1),res_v(:,2),'+')
 xlim([min(res_v(:,1))-100,max(res_v(:,1))+100])
 ylim([min(res_v(:,2))-100,max(res_v(:,2))+100])
+title("Found points onto the vertically rectified Image")
+disp(">> Done")
 
 %% End
 fprintf(1, "------------------------------------------\n>>             Q2_5 : END              <<\n------------------------------------------\n\n")

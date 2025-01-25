@@ -50,7 +50,7 @@ disp("> Features Detected")
 figure;
 
 try 
-    load('S.mat')
+    load('s.mat')
     fprintf(1, "\nSkipping Manual selection of S : already found in /data folder...\n")
     disp("> Loaded S points :")
     disp(S)
@@ -76,7 +76,7 @@ catch
 end
 
 try
-    load('C.mat')
+    load('c.mat')
     fprintf(1, "\nSkipping Manual selection of C : already found in /data folder...\n")
     disp("> Loaded C points :")
     disp(C)
