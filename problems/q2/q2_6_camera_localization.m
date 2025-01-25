@@ -25,31 +25,30 @@ disp("Computing world to plane homography...")
 SCALE = 1000;
 width = 1 * SCALE;
 heigth = actual_height * SCALE;
-
 points = points(:,1:2);
 
-real_points = [
-    0,  heigth; %ul
-    0,  0; %ll
-    width, 0; %lr
-    width, heigth; %ur
+real_points = [ % same order as the points variable
+    0,  heigth,;     %upper left corner
+    0,  0;          %lower left corner
+    width, 0;       %lower right corner
+    width, heigth;  %upper right corner
 ];
 
 tform = fitgeotform2d(points, real_points, 'projective');
-[img_w, R_out_w] = imwarp(img, tform);
+[img_plane, R_out_plane] = imwarp(img, tform);
 
-H_img_to_w = tform.T.';
+H_img_to_plane = tform.T.';
 
-H_w_to_img = inv(H_img_to_w);
-disp("> H_w_to_img:")
-disp(H_w_to_img)
+H_plane_to_img = inv(H_img_to_plane);
+disp("> H_plane_to_img:")
+disp(H_plane_to_img)
 
 
 %% Obtaining Rotation and Translation from the homography
 fprintf(1, "\nComputing rotation and translation...\n")
 
 % getting r1 r2 and t from the K^-1 H relation for the pi plane (z=0)
-B = K \ H_w_to_img;
+B = K \ H_plane_to_img;
 B = B / norm(B(:,1));
 
 rx = B(:,1);

@@ -1,4 +1,4 @@
-function plot_conic(C_h,img,name)
+function plot_conic(C_h,img,name, epsilon)
     % Compute points that belong to the conic
     im_err = zeros(size(img,1),size(img,2));
     for i = 1:size(img,1)
@@ -8,7 +8,6 @@ function plot_conic(C_h,img,name)
     end
     
     % thresholding the conic
-    epsilon = 2e-4;
     conic_mask = abs(im_err)<epsilon;
     
     % Overlay red on conic points

@@ -102,10 +102,12 @@ end
 %% Plotting Results
 fprintf(1, "Plotting results\n")
 imshow(img);
-title("Selected Points:")
+title("Extracted Points:")
 hold on;
 plot(S(:,1),S(:,2), '+')
 plot(C(:,1),C(:,2), '+')
+xlim([400,1000])
+ylim([490,600])
 disp("> Done")
 
 %% END

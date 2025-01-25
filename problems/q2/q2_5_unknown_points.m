@@ -66,11 +66,12 @@ img_h = imwarp(img, tform_h, "OutputView", imref2d(size(img)*10));
 tform_v = projective2d(H_rect_vert');
 [img_v, R_out_v] = imwarp(img, tform_v);
 
+size = 30;
 % Showing images and plotting chosen points
 figure;
 imshow(img)
 hold on;
-plot(res(:,1),res(:,2),'+')
+plot(res(:,1),res(:,2),'+','MarkerSize',size)
 xlim([min(res(:,1))-100,max(res(:,1))+100])
 ylim([min(res(:,2))-100,max(res(:,2))+100])
 title("Found points onto the original Image")
@@ -78,7 +79,7 @@ title("Found points onto the original Image")
 figure;
 imshow(img_h)
 hold on;
-plot(res_h(:,1),res_h(:,2),'+')
+plot(res_h(:,1),res_h(:,2),'+','MarkerSize',size)
 xlim([min(res_h(:,1))-100,max(res_h(:,1))+100])
 ylim([min(res_h(:,2))-100,max(res_h(:,2))+100])
 title("Found points onto the horizontally rectified Image")
@@ -86,7 +87,7 @@ title("Found points onto the horizontally rectified Image")
 figure;
 imshow(img_v, "XData", R_out_v.XWorldLimits, "YData", R_out_v.YWorldLimits)
 hold on;
-plot(res_v(:,1),res_v(:,2),'+')
+plot(res_v(:,1),res_v(:,2),'+','MarkerSize',size)
 xlim([min(res_v(:,1))-100,max(res_v(:,1))+100])
 ylim([min(res_v(:,2))-100,max(res_v(:,2))+100])
 title("Found points onto the vertically rectified Image")

@@ -87,6 +87,7 @@ ylim([0.5,1200.5])
 xy = [m_dir_avg(1), m_dir_avg(2);
       l_dir_avg(1), l_dir_avg(2)];
 plot(xy(:,1), xy(:,2),'LineWidth',2,'Color','blue'); 
+title("Horizontal vanishing line")
 
 disp("> Done")
 

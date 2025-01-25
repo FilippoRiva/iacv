@@ -101,43 +101,6 @@ disp(actual_height)
 save('./../../data/actual_height.mat', 'actual_height')
 
 
-%% Computing Depth for future use
-fprintf(1,'\nComputing Depth...\n')
-% Calculating lower corners in the original image
-l1 = get_line_by_name('l1', lines);
-l2 = get_line_by_name('l2', lines);
-m5 = get_line_by_name('m5', lines);
-m6 = get_line_by_name('m6', lines);
-
-borders = [l1; l2; m5; m6];
-
-for i = 1:4
-      borders(i,:) = normalize(borders(i,:));
-end
-
-ul = cross(borders(2,:), borders(3,:));
-ll = cross(borders(1,:), borders(3,:));
-lr = cross(borders(1,:), borders(4,:));
-ur = cross(borders(2,:), borders(4,:));
-
-dpoints = [ul; ll; lr; ur];
-
-% Calculating points in the rectified image (of the lower face) 
-% Notice that here i'm using H_rect and not H_rect_vert
-for idx = 1:4
-      dpoints(idx,:) = normalize(dpoints(idx,:));
-      dpoints(idx,:) = H_rect*dpoints(idx,:)' ;
-      dpoints(idx,:) = normalize(dpoints(idx,:));
-end
-
-% Calculating depth 
-width = norm(dpoints(1,:) - dpoints(4,:));
-depth = norm(dpoints(1,:) - dpoints(2,:));
-actual_depth = 1/width*depth;
-disp('> Depth to width ratio :')
-disp(actual_depth)
-save('./../../data/actual_depth.mat', 'actual_depth')
-
 %% Showing heigth results
 [img_rect, R_out] = imwarp(img, tform);
 

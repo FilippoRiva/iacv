@@ -157,6 +157,8 @@ imshow(img);
 hold on;
 title("Lines after selection")
 plotLines(lines)
+xlim([200,1500])
+ylim([200,800])
 disp("> Done")
 
 %% Storing Results

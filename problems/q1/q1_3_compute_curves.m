@@ -30,13 +30,19 @@ end
 %% Computing C
 disp("Computing and plotting C...")
 C_h = get_conic(C(:,1),C(:,2));
-plot_conic(C_h,img,'C')
+epsilon = 2e-4;
+plot_conic(C_h,img,'C', epsilon)
+xlim([400,750])
+ylim([450,660])
 disp("> Done")
 
 %% Computing S
 fprintf(1,"\nComputing and plotting S...\n")
 S_h = get_conic(S(:,1),S(:,2));
-plot_conic(S_h,img,'S')
+epsilon = 1e-4;
+plot_conic(S_h,img,'S', epsilon)
+xlim([790,1000])
+ylim([490,600])
 disp("> Done")
 
 %% Saving
