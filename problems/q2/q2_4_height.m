@@ -1,3 +1,4 @@
+%% Initialization
 clc
 clear
 close all
@@ -14,14 +15,18 @@ load('h_rect.mat')
 
 load('omega.mat') % omega : absolute conic
 
+%% Q2_4
+fprintf(1, "------------------------------------------\n>>                 Q2_4               <<\n------------------------------------------\n\n")
 
-% ---- Functions ------
+%% Functions
 
 function norm_line = normalize(line)
       norm_line = line ./ line(3);
 end
 
 
+%% Finding circular points of the vertical plane and computing their dual conic
+disp("Computing circular points and imDCCP...")
 % calculating the line at infinity of the vertical plane
 vl_inf = cross(h_dir_avg, l_dir_avg);
 vl_inf = vl_inf ./ vl_inf(3);
@@ -42,16 +47,19 @@ JJ = double([sol.x(2); sol.y(2); 1]);
 % Computing the conic dual to the circular points and finding the rectifying homography
 imDCCP = II*JJ' + JJ*II'; 
 imDCCP = imDCCP./norm(imDCCP);
+disp("> Done")
 
+%% Getting the rectifying homography from the original image
+fprintf(1,'\nGetting rectifying homography\n')
 [U,S,V] = svd(imDCCP);
 S(3,3) = 1;
 H_rect_vert = inv(U * sqrt(S));
 
-% Storing the results for future use
-save('./../../data/h_rect_vert.mat','H_rect_vert')
-
 tform = projective2d(H_rect_vert');
+disp("> Done")
 
+%% Computing Heigth
+fprintf(1,'\nComputing Heigth...\n')
 % Calculating corners in the original image
 l2 = get_line_by_name('l2', lines);
 l3 = get_line_by_name('l3', lines);
@@ -69,29 +77,32 @@ ll = cross(borders(1,:), borders(3,:));
 lr = cross(borders(1,:), borders(4,:));
 ur = cross(borders(2,:), borders(4,:));
 
-points = [ul; ll; lr; ur];
+hpoints = [ul; ll; lr; ur];
 
 for idx = 1:4
-      points(idx,:) = normalize(points(idx,:));
+      hpoints(idx,:) = normalize(hpoints(idx,:));
 end
 
+points = hpoints;
 save('./../../data/points.mat', "points")
 
 % Calculating points in the rectified image
 for idx = 1:4
-      points(idx,:) = H_rect_vert*points(idx,:)' ;
-      points(idx,:) = normalize(points(idx,:));
+      hpoints(idx,:) = H_rect_vert*hpoints(idx,:)' ;
+      hpoints(idx,:) = normalize(hpoints(idx,:));
 end
 
 % Calculating distances 
-height = norm(points(1,:) - points(2,:));
-width = norm(points(3,:) - points(2,:));
+height = norm(hpoints(1,:) - hpoints(2,:));
+width = norm(hpoints(3,:) - hpoints(2,:));
 actual_height = 1/width*height;
-disp('heigth to width ratio :')
+disp('> Heigth to width ratio :')
 disp(actual_height)
 save('./../../data/actual_height.mat', 'actual_height')
 
 
+%% Computing Depth for future use
+fprintf(1,'\nComputing Depth...\n')
 % Calculating lower corners in the original image
 l1 = get_line_by_name('l1', lines);
 l2 = get_line_by_name('l2', lines);
@@ -109,24 +120,25 @@ ll = cross(borders(1,:), borders(3,:));
 lr = cross(borders(1,:), borders(4,:));
 ur = cross(borders(2,:), borders(4,:));
 
-points = [ul; ll; lr; ur];
+dpoints = [ul; ll; lr; ur];
 
-% Calculating points in the rectified image
+% Calculating points in the rectified image (of the lower face) 
+% Notice that here i'm using H_rect and not H_rect_vert
 for idx = 1:4
-      points(idx,:) = normalize(points(idx,:));
-      points(idx,:) = H_rect*points(idx,:)' ;
-      points(idx,:) = normalize(points(idx,:));
+      dpoints(idx,:) = normalize(dpoints(idx,:));
+      dpoints(idx,:) = H_rect*dpoints(idx,:)' ;
+      dpoints(idx,:) = normalize(dpoints(idx,:));
 end
 
 % Calculating depth 
-width = norm(points(1,:) - points(4,:));
-depth = norm(points(1,:) - points(2,:));
+width = norm(dpoints(1,:) - dpoints(4,:));
+depth = norm(dpoints(1,:) - dpoints(2,:));
 actual_depth = 1/width*depth;
-disp('depth to width ratio :')
+disp('> Depth to width ratio :')
 disp(actual_depth)
 save('./../../data/actual_depth.mat', 'actual_depth')
 
-% Showing the results (only for the heigth)
+%% Showing heigth results
 [img_rect, R_out] = imwarp(img, tform);
 
 figure;
@@ -134,9 +146,14 @@ imshow(img_rect, "XData", R_out.XWorldLimits, "YData", R_out.YWorldLimits)
 hold on;
 axis on;
 
-plot(points(1:2,1), points(1:2,2), 'LineWidth', 2,'Color','blue')
-avg = (points(1,:) + points(2,:)) / 2;
+plot(hpoints(1:2,1), hpoints(1:2,2), 'LineWidth', 2,'Color','blue')
+avg = (hpoints(1,:) + hpoints(2,:)) / 2;
 text(avg(1),avg(2), sprintf('%.4f',actual_height))
-plot(points(2:3,1), points(2:3,2), 'LineWidth', 2,'Color','red')
-avg = (points(2,:) + points(3,:)) / 2;
+plot(hpoints(2:3,1), hpoints(2:3,2), 'LineWidth', 2,'Color','red')
+avg = (hpoints(2,:) + hpoints(3,:)) / 2;
 text(avg(1),avg(2), '1')
+
+%% Storing results
+save('./../../data/h_rect_vert.mat','H_rect_vert')
+
+fprintf(1, "------------------------------------------\n>>             Q2_4 : END              <<\n------------------------------------------\n\n")

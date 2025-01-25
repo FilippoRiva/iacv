@@ -1,3 +1,4 @@
+%% Initialization
 clc
 clear
 close all
@@ -14,7 +15,11 @@ load('lines.mat')
 load('h_rect.mat')
 load('k.mat') % K : calibration matrix calculated in q2_3
 
-% Getting the homography between the world reference system and our image
+%% Q2_6
+fprintf(1, "------------------------------------------\n>>                 Q2_6               <<\n------------------------------------------\n\n")
+
+%% Getting world to plane homography
+disp("Computing world to plane homography...")
 SCALE = 1000;
 width = 1 * SCALE;
 heigth = actual_height * SCALE;
@@ -31,20 +36,16 @@ real_points = [
 tform = fitgeotform2d(points, real_points, 'projective');
 [img_w, R_out_w] = imwarp(img, tform);
 
-figure;
-imshow(img_w, "XData", R_out_w.XWorldLimits, "YData", R_out_w.YWorldLimits)
-xlim([0,width]);
-ylim([0,heigth]);
-hold on;
-axis on;
-impixelinfo
-
 H_img_to_w = tform.T.';
 
 H_w_to_img = inv(H_img_to_w);
+disp("> H_w_to_img:")
+disp(H_w_to_img)
 
 
+%% Obtaining Rotation and Translation from the homography
 % Getting the Rotation and Translation
+fprintf(1, "\nComputing rotation and translation...\n")
 h1 = H_w_to_img(:,1);
 h2 = H_w_to_img(:,2);
 h3 = H_w_to_img(:,3);
@@ -65,10 +66,16 @@ T = (K \(lambda * h3));
 rot = R.';
 pos = -R.' * T;
 
-disp('Camera position:')
-disp(pos)
-disp('Camera rotation:')
+disp('> Camera rotation matrix:')
 disp(rot)
+disp('> Camera position:')
+disp(pos)
 
+%% Storing Results
+fprintf(1, "\nStoring results...\n")
 save('./../../data/rot.mat','rot')
 save('./../../data/pos.mat','pos')
+disp("> Done")
+
+%% End
+fprintf(1, "------------------------------------------\n>>             Q2_6 : END              <<\n------------------------------------------\n\n")

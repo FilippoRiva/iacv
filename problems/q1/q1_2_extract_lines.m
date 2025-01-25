@@ -1,3 +1,4 @@
+%% Initialization
 clc
 clear
 close all
@@ -5,6 +6,15 @@ close all
 addpath(genpath('./../../data'))
 addpath(genpath('./../../utils'))
 
+% Load the image
+img = imread('./../../data/img.jpg');
+
+
+%% Q1_2
+fprintf(1, "------------------------------------------\n>>                 Q1_2                 <<\n------------------------------------------\n\n")
+
+%% Functions
+% Plot lines
 function plotLines(lines)
     if isstruct(lines)
         plotLinesStruct(lines)
@@ -13,6 +23,7 @@ function plotLines(lines)
     end
 end
 
+% Plot a matrix of lines
 function plotLinesMat(lines)
     names = ["l1","l2","l3",...
              "h1","h2","h3","h4",...
@@ -27,6 +38,7 @@ function plotLinesMat(lines)
     end
 end
 
+% Plot the struct of lines
 function plotLinesStruct(lines)
     for k = 1:length(lines)
         xy = [lines(k).point1; lines(k).point2];
@@ -42,29 +54,37 @@ function plotLinesStruct(lines)
 end
 
 
-% Loading the image
-img = imread('./../../data/img.jpg');
+%% Preprocessing
 
-% Preprocessing
 gray = rgb2gray(img);
 gray = histeq(gray);
 
+%% Edge Detection
 % Extracting edges using Sobel
+disp("Extracting Edges...")
 method = 'Sobel';
 hEdges = edge(gray, method, 0.05, "horizontal");
 vEdges = edge(gray, method, 0.05, 'vertical');
+disp("> Done")
 
+%% Hough Transform 
 % Performing Hough Transform for horizontal lines
+fprintf(1, "\nPerforming Hough Transform on horizontal lines\n")
 [H,T,R] = hough(hEdges,'RhoResolution',0.5,'Theta',-90:0.5:89);
 P = houghpeaks(H,50,'threshold',ceil(0.3*max(H(:))), 'NHoodSize', [97 37]);
 hlines = houghlines(hEdges, T, R, P, 'FillGap', 100, 'MinLength', 50);
+disp("> Done")
 
 % Performing Hough Transform for vertical lines
+fprintf(1, "\nPerforming Hough Transform on vertical lines\n")
 [H,T,R] = hough(vEdges,'RhoResolution',0.5,'Theta',-90:0.5:89);
 P = houghpeaks(H,50,'threshold',ceil(0.3*max(H(:))), 'NHoodSize', [97 37]);
 vlines = houghlines(vEdges, T, R, P, 'FillGap', 100, 'MinLength', 50);
+disp("> Done")
 
+%% Detected Lines Plotting
 % Plot the lines
+fprintf(1, "\nPlotting automatically detected lines\n")
 f2 = figure();
 imshow(img);
 hold on;
@@ -72,8 +92,10 @@ title("Automatically detected lines")
 
 lines = [hlines, vlines];
 plotLines(lines);
+disp("> Done")
 
-% manually chosen
+%% Choosing Lines
+
 names =["l1","l2","l3",...
        "h1","h2","h3","h4",...
        "m1","m2","m3","m4","m5","m6"];
@@ -94,10 +116,6 @@ h4 = [lines(idxs(7)).point1;
       lines(idxs(7)).point2];
 m5 = [lines(idxs(12)).point1;
       lines(idxs(12)).point2];
-
-disp("Click to move on")
-waitforbuttonpress
-close(f2)
 
 % Manually picked points for lines retrieval
 % l3, m1, m2, m3, m4, m6
@@ -132,11 +150,18 @@ for i = 1:length(names)
       lines(i).line = get_line(list{i});
 end
 
+%% Plotting Chosen Lines
+fprintf(1, "\nPlotting manually selected lines\n")
 f3 = figure();
 imshow(img);
 hold on;
-title("Lines after selection and manual intervention")
+title("Lines after selection")
 plotLines(lines)
+disp("> Done")
 
+%% Storing Results
 % Storing the results for future use
 save('./../../data/lines.mat','lines');
+
+%% END
+fprintf(1, "------------------------------------------\n>>             Q1_2 : END               <<\n------------------------------------------\n\n")

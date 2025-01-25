@@ -1,3 +1,4 @@
+%% Introduction
 clc
 clear
 close all
@@ -10,7 +11,12 @@ load('s_h.mat')
 load('h_rect.mat')
 load('h_rect_vert.mat')
 
-% Compute points that belong to the conic
+%% Q2_5
+fprintf(1, "------------------------------------------\n>>                 Q2_5               <<\n------------------------------------------\n\n")
+
+%% Compute points belonging to the conic
+disp("Computing points...")
+% Calculating error
 im_err = zeros(size(img,1),size(img,2));
 for i = 1:size(img,1)
     for j = 1:size(img,2)
@@ -18,17 +24,15 @@ for i = 1:size(img,1)
     end
 end
 
-% thresholding the conic
+% Applying a threshold the conic and getting the pixel below that threshold
 epsilon = 1e-5;
 conic_mask = abs(im_err)<epsilon;
 
 [y,x] = find(conic_mask==1);
 
-assert(conic_mask(y(1),x(1))==1)
-
 A = [x,y];
 
-% choosing 12 random points
+% choosing 12 random points and projecting them into the vertical and horizontal plane
 rng(42)
 num_points = 12;
 idxs = randperm(length(A));
@@ -43,14 +47,16 @@ for i = 1:num_points
     res_v(i,:) = H_rect_vert * res(i,:)';
     res_v(i,:) = res_v(i,:)./res_v(i,3);
 end
+disp("> Done")
 
-% Showing results
+%% Showing results
+fprintf("Showing Results...")
 format shortG
-disp("Original image points:")
+disp("> Original image points:")
 disp(res(:,:))
-disp("Horizontal plane points:")
+disp("> Horizontal plane points:")
 disp(double(res_h(:,:)))
-disp("Vertical plane points:")
+disp("> Vertical plane points:")
 disp(res_v(:,:))
 
 % Calculating projected imgs
@@ -80,3 +86,6 @@ hold on;
 plot(res_v(:,1),res_v(:,2),'+')
 xlim([min(res_v(:,1))-100,max(res_v(:,1))+100])
 ylim([min(res_v(:,2))-100,max(res_v(:,2))+100])
+
+%% End
+fprintf(1, "------------------------------------------\n>>             Q2_5 : END              <<\n------------------------------------------\n\n")
