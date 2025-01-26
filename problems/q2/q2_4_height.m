@@ -8,8 +8,8 @@ addpath(genpath('./../../utils'))
 
 img = imread('img.jpg');
 
-load('h_dir_avg.mat') % h_dir_avg : vanishing point of the h lines
-load('l_dir_avg.mat') % l_dir_avg : vanishing point of the l lines
+load('h_vp.mat') % h_vp : vanishing point of the h lines
+load('l_vp.mat') % l_vp : vanishing point of the l lines
 load('lines') % lines : struct defined in q1_2
 load('h_rect.mat')
 
@@ -28,7 +28,7 @@ end
 %% Finding circular points of the vertical plane and computing their dual conic
 disp("Computing circular points and imDCCP...")
 % calculating the line at infinity of the vertical plane
-vl_inf = cross(h_dir_avg, l_dir_avg);
+vl_inf = cross(h_vp, l_vp);
 vl_inf = vl_inf ./ vl_inf(3);
 
 % Finding the Circular Points for the vertical plane as the intersection between omega and vl_inf
@@ -56,7 +56,8 @@ S(3,3) = 1;
 H_rect_vert = inv(U * sqrt(S));
 
 tform = projective2d(H_rect_vert');
-disp("> Done")
+disp("> H_rect_vert:")
+disp(H_rect_vert)
 
 %% Computing Heigth
 fprintf(1,'\nComputing Heigth...\n')
@@ -118,5 +119,6 @@ text(avg(1),avg(2), '1')
 
 %% Storing results
 save('./../../data/h_rect_vert.mat','H_rect_vert')
+save('./../../data/vl_inf.mat','vl_inf')
 
 fprintf(1, "------------------------------------------\n>>             Q2_4 : END              <<\n------------------------------------------\n\n")

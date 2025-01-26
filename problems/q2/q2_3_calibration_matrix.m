@@ -8,9 +8,9 @@ addpath(genpath('./../../utils'))
 
 img = imread('img.jpg');
 
-load('h_dir_avg.mat') % h_dir_avg : vanishing point of the h lines
-load('l_dir_avg.mat') % l_dir_avg : vanishing point of the l lines
-load('m_dir_avg.mat') % m_dir_avg : vanishing point of the m lines
+load('h_vp.mat') % h_vp : vanishing point of the h lines
+load('l_vp.mat') % l_vp : vanishing point of the l lines
+load('m_vp.mat') % m_vp : vanishing point of the m lines
 load('h_rect.mat') % H_rect : rectification matrix from original image to rectified img
 load('hl_inf.mat') % hl_inf : image of the line at infinity
 
@@ -39,7 +39,7 @@ eq1 = h1'*omega*h2 == 0;
 eq2 = h1'*omega*h1 - h2'*omega*h2 == 0;
 
 % Using the line at infinity
-eq34 = cross(hl_inf', omega*h_dir_avg') ==0; 
+eq34 = cross(hl_inf', omega*h_vp') ==0; 
 eq3 = eq34(1);
 eq4 = eq34(2);
 

@@ -69,7 +69,6 @@ img_rgb(:, :, 3) = rect_img(:, :, 3) .* uint8(~conic_mask);     % Remove blue
 figure;
 imshow(img_rgb)
 hold on;
-axis on;
 title("Rectified S curve")
 disp("> Done")
 

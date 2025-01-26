@@ -12,7 +12,7 @@ load('lines.mat')
 load('c_h.mat') % csi_h is the homogeneous representation of the C circumference
 
 R_img = imref2d(size(img), [0,size(img,2)], [0,size(img,1)]);
-ENABLE_PLOTTING = false;
+ENABLE_PLOTTING = true;
 
 fprintf(1, "------------------------------------------\n>>                 Q2_2                 <<\n------------------------------------------\n\n")
 
@@ -134,11 +134,12 @@ depth = norm(dpoints(1,:) - dpoints(2,:));
 actual_depth = 1/width*depth;
 disp('> Depth to width ratio :')
 disp(actual_depth)
-save('./../../data/actual_depth.mat', 'actual_depth')
 
 %% Storing Results
 fprintf(1,"\nStoring results...\n")
+save('./../../data/h_affine.mat', 'H_affine')
 save('./../../data/h_rect.mat', 'H_rect')
+save('./../../data/actual_depth.mat', 'actual_depth')
 disp("> Done")
 
 %% End

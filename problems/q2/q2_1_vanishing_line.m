@@ -37,18 +37,18 @@ m_dir = zeros(length(comb), 3);
 for i = 1:length(comb)
     m_dir(i,:) = calculate_intersection_from_idx(comb(i,1),comb(i,2),lines);
 end
-m_dir_avg = [mean(m_dir(:,1)),mean(m_dir(:,2)),1];
+m_vp = [mean(m_dir(:,1)),mean(m_dir(:,2)),1];
 disp("> Solution:")
-disp(m_dir_avg)
+disp(m_vp)
 
 % Find the average of the intersection between l1 & l3 + l2 & l3
 fprintf(1, '\nComputing vanishing point of the l lines ...\n')
 l_dir = zeros(2, 3);
 l_dir(1,:) = calculate_intersection_from_idx(1,3,lines);
 l_dir(2,:) = calculate_intersection_from_idx(2,3,lines);
-l_dir_avg = [mean(l_dir(:,1)),mean(l_dir(:,2)),1];
+l_vp = [mean(l_dir(:,1)),mean(l_dir(:,2)),1];
 disp("> Solution:")
-disp(l_dir_avg)
+disp(l_vp)
 
 % Find the average of the intersection of all the combinations of h_i
 % Calculated here for future use
@@ -59,9 +59,9 @@ h_dir = zeros(length(comb), 3);
 for i = 1:length(comb)
     h_dir(i,:) = calculate_intersection_from_idx(comb(i,1),comb(i,2),lines);
 end
-h_dir_avg = [mean(h_dir(:,1)),mean(h_dir(:,2)),1];
+h_vp = [mean(h_dir(:,1)),mean(h_dir(:,2)),1];
 disp("> Solution:")
-disp(h_dir_avg)
+disp(h_vp)
 
 
 %% Plotting results
@@ -75,17 +75,17 @@ plot_lines_from_struct(lines)
 for i = 1:15
     plot(m_dir(i,1),m_dir(i,2),'o');
 end
-plot(m_dir_avg(1),m_dir_avg(2),'+')
+plot(m_vp(1),m_vp(2),'+')
 % plotting the l_dir points
 for i = 1:2
     plot(l_dir(i,1),l_dir(i,2),'o');
 end
-plot(l_dir_avg(1),l_dir_avg(2),'+')
+plot(l_vp(1),l_vp(2),'+')
 % plotting the line at infinity
 xlim([0.5,3500.5])
 ylim([0.5,1200.5])
-xy = [m_dir_avg(1), m_dir_avg(2);
-      l_dir_avg(1), l_dir_avg(2)];
+xy = [m_vp(1), m_vp(2);
+      l_vp(1), l_vp(2)];
 plot(xy(:,1), xy(:,2),'LineWidth',2,'Color','blue'); 
 title("Horizontal vanishing line")
 
@@ -94,15 +94,15 @@ disp("> Done")
 %% Computing the vanishing line
 % computing the line in homogeneous coordinates and storing it for future use
 fprintf(1, '\nComputing the vanishing line...\n')
-hl_inf = cross(m_dir_avg, l_dir_avg);
+hl_inf = cross(m_vp, l_vp);
 hl_inf = hl_inf / (hl_inf(3));
 disp('> Result:')
 disp(hl_inf)
 
 %% Storing results
-save('./../../data/m_dir_avg.mat', 'm_dir_avg')
-save('./../../data/l_dir_avg.mat', 'l_dir_avg')
-save('./../../data/h_dir_avg.mat', 'h_dir_avg')
+save('./../../data/m_vp.mat', 'm_vp')
+save('./../../data/l_vp.mat', 'l_vp')
+save('./../../data/h_vp.mat', 'h_vp')
 save('./../../data/hl_inf.mat', 'hl_inf')
 
 %% End
