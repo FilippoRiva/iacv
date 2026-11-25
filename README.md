@@ -1,6 +1,8 @@
 # iacv
 Image Analysis and Computer Vision homework 2024/25.
 
+Project Grade: 30/30
+
 For additional info refer to `report.pdf` file, providing a detailed explanation of the homework and the proposed solutions.
 
 Folder Structure : 
